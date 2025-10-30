@@ -1,2 +1,3 @@
 # sc-git-flow-library
-This is a library to standardize running git-flow commands used in the sc app.
+
+A collection of utility for standardising git-flow interactions in python.
