@@ -1,3 +1,17 @@
+# Copyright 2025 RDK Management
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import logging
 from pathlib import Path
 import subprocess
@@ -22,9 +36,9 @@ class GitFlowLibrary:
     @staticmethod
     def get_git_root(directory: str | Path) -> Path | None:
         """Returns the first .git found in directories above.
-        
+
         Args:
-            directory: The directory to search upward from. Defaults to 
+            directory: The directory to search upward from. Defaults to
                 current working directory.
         """
         path = Path(directory).resolve()
@@ -38,7 +52,7 @@ class GitFlowLibrary:
     @staticmethod
     def init(directory: str | Path, defaults:bool=True):
         """Initialises a repository for git flow commands.
-        
+
         Args:
             directory (str): Where to initialise git flow.
             defaults (bool): If true use the default branch names for git-flow, if false
@@ -50,7 +64,7 @@ class GitFlowLibrary:
 
         logger.info(f"In {directory}: {cmd}")
         subprocess.run(cmd, cwd=directory, check=True)
-    
+
     @staticmethod
     def start(
         directory: str | Path,
@@ -67,7 +81,7 @@ class GitFlowLibrary:
             cmd.append(base)
 
         subprocess.run(cmd, cwd=directory, check=True)
-    
+
     @staticmethod
     def checkout(
         directory: str | Path,
@@ -101,7 +115,7 @@ class GitFlowLibrary:
 
         Raises:
             ValueError: If tag_message used with wrong branch_type.
-        """    
+        """
         cmd = ['git', 'flow', branch_type, 'finish']
         if name:
             cmd.append(name)
@@ -124,7 +138,7 @@ class GitFlowLibrary:
             raise RuntimeError(
                 "Master branch not set in gitflow config. This shouldn't be possible.")
         return branch
-    
+
     @staticmethod
     def get_develop_branch(directory: str | Path) -> str | None:
         branch = GitFlowLibrary.get_config_value('branch.develop', directory)
@@ -132,7 +146,7 @@ class GitFlowLibrary:
             raise RuntimeError(
                 "Develop branch not set in gitflow config. This shouldn't be possible.")
         return branch
-    
+
     @staticmethod
     def get_branch_base(branch: str, directory: str | Path) -> str | None:
         """Get the base branch for a given gitflow branch.
@@ -143,9 +157,9 @@ class GitFlowLibrary:
 
         Returns:
             str | None: The base branch name if set, otherwise None.
-        """        
+        """
         return GitFlowLibrary.get_config_value(f'branch.{branch}.base', directory)
-    
+
     @staticmethod
     def set_branch_base(branch: str, base: str, directory: str | Path):
         """Set the base branch for a given gitflow branch.
@@ -157,7 +171,7 @@ class GitFlowLibrary:
 
         Raises:
             RuntimeError: If gitflow not enabled.
-        """        
+        """
         if not GitFlowLibrary.is_gitflow_enabled(directory):
             raise RuntimeError(
                 f"Tried to set gitflow branch base in {directory} but gitflow "
@@ -167,9 +181,9 @@ class GitFlowLibrary:
             ['git', 'flow', 'config', 'base', '--set', branch, base],
             cwd=directory
         )
-    
+
     @staticmethod
-    def get_config_value(key: str, directory: str | Path) -> str | None: 
+    def get_config_value(key: str, directory: str | Path) -> str | None:
         """Get a gitflow config value for a repo in given directory.
 
         Args:
@@ -181,7 +195,7 @@ class GitFlowLibrary:
 
         Returns:
             str | None: The configuration value if set, otherwise None.
-        """        
+        """
         if not GitFlowLibrary.is_gitflow_enabled(directory):
             raise RuntimeError(
                 f"Tried to read gitflow config in {directory} but gitflow "
